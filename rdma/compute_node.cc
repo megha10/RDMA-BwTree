@@ -35,7 +35,7 @@ void client_thread(RDMA_Manager* rdma_manager){
   rdma_manager->local_mem_pool[0] = (ibv_mr *)root;
   mem_pool_table[0] = *(rdma_manager->local_mem_pool[0]);
   mem_pool_table[1] = *(rdma_manager->local_mem_pool[0]);
-  mem_pool_table[1].addr = (void*)((char*)mem_pool_table[1].addr + sizeof("root"));// PROBLEM Could be here.
+  mem_pool_table[1].addr = (void*)((char*)mem_pool_table[1].addr + sizeof(root));// PROBLEM Could be here.
 
   // char *msg = static_cast<char *>(rdma_manager->local_mem_pool[0]->addr);
   // strcpy(msg, "message from computing node");
