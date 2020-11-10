@@ -32,7 +32,7 @@ void client_thread(RDMA_Manager* rdma_manager){
   rdma_manager->Remote_Query_Pair_Connection(thread_id);
   std::cout << rdma_manager->remote_mem_pool[0];
   ibv_mr mem_pool_table[2];
-  rdma_manager->local_mem_pool[0] = (ibv_mr *)root;
+  memcpy(rdma_manager->local_mem_pool[0], &root, sizeof(root));
   mem_pool_table[0] = *(rdma_manager->local_mem_pool[0]);
   mem_pool_table[1] = *(rdma_manager->local_mem_pool[0]);
   mem_pool_table[1].addr = (void*)((char*)mem_pool_table[1].addr + sizeof(root));// PROBLEM Could be here.
