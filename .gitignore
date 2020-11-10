@@ -1,3 +1,7 @@
+.vscode
+server
+compute_node
+
 # Compiled Object files
 *.slo
 *.lo
