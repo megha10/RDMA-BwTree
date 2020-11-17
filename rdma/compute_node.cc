@@ -1,8 +1,10 @@
 #include <iostream>
 #include "rdma.h"
+#include "BPlusTree.cpp"
 
 void client_thread(RDMA_Manager* rdma_manager){
-
+  Block *rootBlock = new Block();
+  rootBlock->value[0] = atoi(static_cast<char *>(rdma_manager->local_mem_pool[0]->addr));
   auto myid = std::this_thread::get_id();
   std::stringstream ss;
   ss << myid;
@@ -10,14 +12,16 @@ void client_thread(RDMA_Manager* rdma_manager){
   rdma_manager->Remote_Memory_Register(100*1024*1024);
   rdma_manager->Remote_Query_Pair_Connection(thread_id);
   std::cout << rdma_manager->remote_mem_pool[0];
+  insertNode(rootBlock, 89);
+  
   ibv_mr mem_pool_table[2];
   mem_pool_table[0] = *(rdma_manager->local_mem_pool[0]);
   mem_pool_table[1] = *(rdma_manager->local_mem_pool[0]);
-  mem_pool_table[1].addr = (void*)((char*)mem_pool_table[1].addr + sizeof("message from computing node"));// PROBLEM Could be here.
+  mem_pool_table[1].addr = (void*)((char*)mem_pool_table[1].addr + sizeof(rootBlock));// PROBLEM Could be here.
 
-  char *msg = static_cast<char *>(rdma_manager->local_mem_pool[0]->addr);
-  strcpy(msg, "message from computing node");
-  int msg_size = sizeof("message from computing node");
+  //char *msg = static_cast<char *>(rdma_manager->local_mem_pool[0]->addr);
+  //strcpy(msg, "message from computing node");
+  int msg_size = sizeof(rootBlock);
   rdma_manager->RDMA_Write(rdma_manager->remote_mem_pool[0], &mem_pool_table[0],
                            msg_size, thread_id);
 
